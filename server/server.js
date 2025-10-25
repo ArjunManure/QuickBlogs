@@ -1,9 +1,18 @@
-require("dotenv").config();
-const express = require ("express");
+import "dotenv/config";
+import cors from "cors";
+import express from "express";
+import connectDB from "./configs/db.js";
 
 const app = express();
 
-app.get('/',(req,res) => {
+await connectDB();
+
+// MiddleWare
+app.use(cors())
+
+app.use(express.json());
+
+app.get('/home',(req,res) => {
     res.send("This is the home page")
 })
 
@@ -12,3 +21,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT,() =>{
     console.log(`The server is listening at http://localhost:${PORT}`)
 })
+
+export default app;
