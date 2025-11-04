@@ -3,6 +3,8 @@ import cors from "cors";
 import express from "express";
 import connectDB from "./configs/db.js";
 import { adminLogin } from "./controller/adminController.js";
+import adminRouter from "./routes/adminRoutes.js";
+import blogRouter from "./routes/blogRoutes.js";
 
 const app = express();
 
@@ -17,7 +19,8 @@ app.get('/home',(req,res) => {
     res.send("This is the home page")
 })
 
-app.post("/login" , adminLogin);
+app.use('/api/admin/' , adminRouter);
+app.use('/api/blog/' , blogRouter);
 
 const PORT = process.env.PORT || 3000;
 
