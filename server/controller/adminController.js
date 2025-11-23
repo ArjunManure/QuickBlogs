@@ -7,11 +7,12 @@ export const adminLogin = async (req, res) => {
     const { email, password } = req.body;
 
     if (email !== process.env.EMAIL || password !== process.env.PASS) {
+      console.log("not valid")
       return res
         .status(401)
         .json({ success: false, message: "Invalid credentials" });
     }
-
+    console.log("valid")
     const token = jwt.sign({ email }, process.env.SECRET_KEY);
 
     res.json({ success: true, token });
