@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { assets, blog_data, comments_data } from '../assets/assets'
+import { assets } from '../assets/assets'
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Moment from 'moment'
@@ -10,17 +10,17 @@ import toast from 'react-hot-toast';
 
 const Blog = () => {
   const { id } = useParams();
-  const {axios} = useAppContext();
+  const { axios } = useAppContext();
 
 
   const [data, setData] = useState(null);
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
 
   const fetchBlogData = async () => {
     try {
-      const {data} = await axios.get(`/api/blog/${id}`)
+      const { data } = await axios.get(`/api/blog/${id}`)
       data.success ? setData(data.blog) : toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
@@ -29,10 +29,10 @@ const Blog = () => {
 
   const fetchCommentData = async () => {
     try {
-      const {data} = await axios.post('/api/blog/comments',{blogId : id})
-      if(data.success){
+      const { data } = await axios.post('/api/blog/comments', { blogId: id })
+      if (data.success) {
         setComments(data.comments)
-      }else{
+      } else {
         toast.error(data.message)
       }
     } catch (error) {
@@ -43,7 +43,26 @@ const Blog = () => {
   const addComment = async (e) => {
     e.preventDefault();
 
-  }
+    try {
+      const { data } = await axios.post("/api/blog/add-comment/", {
+        blog: id,
+        name,
+        content,
+      });
+
+      if (data.success) {
+        toast.success("Comment added!");
+        setName("");
+        setContent("");
+        fetchCommentData();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
 
   useEffect(() => {
     fetchBlogData();
